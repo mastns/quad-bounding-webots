@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+
+# run outputs, written by the controllers and runners (regenerate with the commands in the READMEs)
+**/controllers/*/data/
+mujoco/data/
+plots/data/
+
+# Webots per-user project files and the temporary worlds of run_headless.sh
+*.wbproj
+.headless_*
+
+# the helper supervisor run_headless.sh copies into each project (source: tools/movie_recorder.py)
+**/controllers/movie_recorder/
+
+# physics plugin build folders (the built .so next to each plugin's source is kept)
+**/plugins/physics/*/build/
+
+# movies: rendered locally with run_headless.sh and mujoco/run_controller.py; the GIFs made from them are in media/gif
+media/*.mp4
