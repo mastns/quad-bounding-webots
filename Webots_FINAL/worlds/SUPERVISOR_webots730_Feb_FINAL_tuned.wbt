@@ -1,0 +1,932 @@
+#VRML_SIM R2025a utf8
+# Tuned copy of SUPERVISOR_webots730_Feb_FINAL.wbt: leg springs 2-4 axis 0 -1 0 -> 0 1 0, as leg 1 and every 2014 world (they were locked on their stop) (tools/make_tuned_worlds.py)
+# Converted from Webots V7.4.3 by tools/convert_v7_world.py (original: SUPERVISOR_webots730_Feb_FINAL.wbt)
+DEF QUAD_SIM WorldInfo {
+  info [
+    "Quad Controller"
+    "Athanasios Mastrogeorgiou"
+    "Date: 01 NOV 2012"
+  ]
+  CFM 1e-16
+  ERP 0.1
+  basicTimeStep 1
+  contactProperties [
+    ContactProperties {
+      material1 "floor"
+      material2 "foot"
+      coulombFriction [
+        -1
+      ]
+      bounce 0.9
+      softERP 0.1
+      softCFM 1e-10
+    }
+  ]
+  coordinateSystem "NUE"
+  physics "physics_webots730_Feb_FINAL"
+}
+Viewpoint {
+  fieldOfView 1.5708
+  orientation -0.606312 0.595654 0.52686 2.153061
+  position -0.0124388 0.373293 0.787421
+  follow "QUAD_ROBOT"
+}
+Background {
+  skyColor [
+    0.4 0.7 1
+  ]
+}
+Solid {
+  children [
+    Pose {
+      rotation 1 0 0 -1.570796
+      children [
+        Shape {
+          appearance Appearance {
+            texture ImageTexture {
+              url [
+                "textures/metric_floor.png"
+              ]
+            }
+            textureTransform TextureTransform {
+              scale 20 20
+            }
+          }
+          geometry Plane {
+            size 20 20
+          }
+        }
+      ]
+    }
+  ]
+  name "floor"
+  contactMaterial "floor"
+  boundingObject Pose {
+    rotation 1 0 0 -1.570796
+    children [
+      Plane {
+        size 20 20
+      }
+    ]
+  }
+  locked TRUE
+}
+DirectionalLight {
+  ambientIntensity 1
+  direction 0 -1 0
+}
+DEF QUAD_ROBOT Robot {
+  translation 0 0.34 0
+  rotation 0 0 -1 0.01
+  children [
+    DEF CoM_Emitter Emitter {
+      name "CoM_Emitter"
+      type "serial"
+      bufferSize 1024
+    }
+    DEF SERVO1 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor 0.27 0 0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo1_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo1_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.27 -0.04 0.195
+        rotation 0 0 -1 0
+        children [
+          DEF LEG_GYRO_1_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_1_1"
+          }
+          DEF SPRING1 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING1MOTOR LinearMotor {
+                name "spring1"
+                maxVelocity 100
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring1_sensor"
+              }
+            ]
+            endPoint DEF SPRING1SOLID Solid {
+              children [
+                DEF FOOT1 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot1"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot1_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance Appearance {
+                              material Material {
+                                diffuseColor 1 1 0.8
+                                emissiveColor 1 1 0
+                                transparency 0.4
+                              }
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT1_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING1SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            translation 0 -0.0775 0
+            children [
+              DEF SPRING_CASE_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    emissiveColor 0 0 1
+                    transparency 0.3
+                  }
+                }
+                geometry Cylinder {
+                  height 0.075
+                  radius 0.004
+                }
+              }
+            ]
+            rotation -1 0 0 1.570796
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            children [
+              DEF SERVO_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    diffuseColor 1 1 0
+                    emissiveColor 1 1 0
+                  }
+                  texture ImageTexture {
+                    url [
+                      "textures/1.png"
+                    ]
+                  }
+                }
+                geometry Sphere {
+                  radius 0.02
+                }
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO1_link"
+      }
+    }
+    DEF SERVO2 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor -0.27 0 0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo2_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo2_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.27 -0.04 0.195
+        children [
+          DEF LEG_GYRO_2_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_2_1"
+          }
+          DEF SPRING2 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING2MOTOR LinearMotor {
+                name "spring2"
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring2_sensor"
+              }
+            ]
+            endPoint DEF SPRING2SOLID Solid {
+              children [
+                DEF FOOT2 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 -1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot2"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot2_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance Appearance {
+                              material Material {
+                                diffuseColor 1 1 0.8
+                                emissiveColor 1 1 0
+                                transparency 0.4
+                              }
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT2_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING2SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            translation 0 -0.0775 0
+            children [
+              DEF SPRING_CASE_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    emissiveColor 0 0 1
+                    transparency 0.3
+                  }
+                }
+                geometry Cylinder {
+                  height 0.075
+                  radius 0.004
+                }
+              }
+            ]
+            rotation -1 0 0 1.570796
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            children [
+              DEF SERVO_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    diffuseColor 1 1 0
+                    emissiveColor 1 1 0
+                  }
+                  texture ImageTexture {
+                    url [
+                      "textures/2.png"
+                    ]
+                  }
+                }
+                geometry Sphere {
+                  radius 0.02
+                }
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO2_link"
+      }
+    }
+    DEF SERVO3 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor -0.27 0 -0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo3_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo3_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.27 -0.04 -0.195
+        children [
+          DEF LEG_GYRO_3_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_1_1"
+          }
+          DEF SPRING3 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING3MOTOR LinearMotor {
+                name "spring3"
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring3_sensor"
+              }
+            ]
+            endPoint DEF SPRING3SOLID Solid {
+              children [
+                DEF FOOT3 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 -1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot3"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot3_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance Appearance {
+                              material Material {
+                                diffuseColor 1 1 0.8
+                                emissiveColor 1 1 0
+                                transparency 0.4
+                              }
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT3_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING3SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            translation 0 -0.0775 0
+            children [
+              DEF SPRING_CASE_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    emissiveColor 0 0 1
+                    transparency 0.3
+                  }
+                }
+                geometry Cylinder {
+                  height 0.075
+                  radius 0.004
+                }
+              }
+            ]
+            rotation -1 0 0 1.570796
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            rotation 0 1 0 3.14159
+            children [
+              DEF SERVO_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    diffuseColor 1 1 0
+                    emissiveColor 1 1 0
+                  }
+                  texture ImageTexture {
+                    url [
+                      "textures/3.png"
+                    ]
+                  }
+                }
+                geometry Sphere {
+                  radius 0.02
+                }
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO3_link"
+      }
+    }
+    DEF SERVO4 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor 0.27 0 -0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo4_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo4_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.27 -0.04 -0.195
+        children [
+          DEF LEG_GYRO_4_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_1_1"
+          }
+          DEF SPRING4 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING4MOTOR LinearMotor {
+                name "spring4"
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring4_sensor"
+              }
+            ]
+            endPoint DEF SPRING4SOLID Solid {
+              children [
+                DEF FOOT4 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 -1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot4"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot4_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance Appearance {
+                              material Material {
+                                diffuseColor 1 1 0.8
+                                emissiveColor 1 1 0
+                                transparency 0.4
+                              }
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT4_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING4SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            translation 0 -0.0775 0
+            children [
+              DEF SPRING_CASE_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    emissiveColor 0 0 1
+                    transparency 0.3
+                  }
+                }
+                geometry Cylinder {
+                  height 0.075
+                  radius 0.004
+                }
+              }
+            ]
+            rotation -1 0 0 1.570796
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            rotation 0 1 0 3.14159
+            children [
+              DEF SERVO_SHAPE Shape {
+                appearance Appearance {
+                  material Material {
+                    diffuseColor 1 1 0
+                    emissiveColor 1 1 0
+                  }
+                  texture ImageTexture {
+                    url [
+                      "textures/4.png"
+                    ]
+                  }
+                }
+                geometry Sphere {
+                  radius 0.02
+                }
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO4_link"
+      }
+    }
+    DEF CoM_Receiver Receiver {
+      name "CoM_Receiver"
+    }
+    DEF CoM_Gyro Gyro {
+      name "CoM_Gyro"
+    }
+    DEF CoM_GPS GPS {
+      name "CoM_Gps"
+    }
+    DEF CoM_Accelerometer Accelerometer {
+      name "CoM_Accelerometer"
+    }
+    DEF ROBOT_SHAPE Shape {
+      appearance Appearance {
+        texture ImageTexture {
+          url [
+            "textures/alum.png"
+          ]
+        }
+      }
+      geometry Box {
+        size 0.6 0.08 0.35
+      }
+    }
+  ]
+  name "QUAD_ROBOT"
+  boundingObject USE ROBOT_SHAPE
+  physics Physics {
+    density -1
+    mass 10.5
+    centerOfMass [
+      0 0 0
+    ]
+    inertiaMatrix [
+      10 10 0.8
+      0 0 0
+    ]
+  }
+  locked TRUE
+  selfCollision TRUE
+  supervisor TRUE
+  controller "controller_webots730_Feb_FINAL"
+}
+Solid {
+  translation 1 0.16 0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.62 0.45 0.26
+        }
+      }
+      geometry Box {
+        size 0.32 0.32 0.32
+      }
+    }
+  ]
+  name "wood box"
+  boundingObject Box {
+    size 0.32 0.32 0.32
+  }
+}

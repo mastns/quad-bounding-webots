@@ -1,0 +1,1851 @@
+#VRML_SIM R2025a utf8
+# Showcase copy of SUPERVISOR_webots730_Feb_FINAL_tuned.wbt: new look, same physics (tools/make_showcase_worlds.py)
+# Tuned copy of SUPERVISOR_webots730_Feb_FINAL.wbt: leg springs 2-4 axis 0 -1 0 -> 0 1 0, as leg 1 and every 2014 world (they were locked on their stop) (tools/make_tuned_worlds.py)
+# Converted from Webots V7.4.3 by tools/convert_v7_world.py (original: SUPERVISOR_webots730_Feb_FINAL.wbt)
+DEF QUAD_SIM WorldInfo {
+  info [
+    "Quad Controller"
+    "Athanasios Mastrogeorgiou"
+    "Date: 01 NOV 2012"
+  ]
+  CFM 1e-16
+  ERP 0.1
+  basicTimeStep 1
+  contactProperties [
+    ContactProperties {
+      material1 "floor"
+      material2 "foot"
+      coulombFriction [
+        -1
+      ]
+      bounce 0.9
+      softERP 0.1
+      softCFM 1e-10
+    }
+  ]
+  coordinateSystem "NUE"
+  physics "physics_webots730_Feb_FINAL"
+}
+Viewpoint {
+  fieldOfView 0.75
+  orientation -0.794947 0.499359 0.344529 1.909426
+  position -1.55 0.74 2.05
+  follow "QUAD_ROBOT"
+  followSmoothness 0.05
+  near 0.02
+}
+Background {
+  skyColor [
+    0.75 0.84 0.94
+  ]
+  backUrl [
+    "textures/studio_sky_back.png"
+  ]
+  bottomUrl [
+    "textures/studio_sky_bottom.png"
+  ]
+  frontUrl [
+    "textures/studio_sky_front.png"
+  ]
+  leftUrl [
+    "textures/studio_sky_left.png"
+  ]
+  rightUrl [
+    "textures/studio_sky_right.png"
+  ]
+  topUrl [
+    "textures/studio_sky_top.png"
+  ]
+  backIrradianceUrl [
+    "textures/studio_sky_back.hdr"
+  ]
+  bottomIrradianceUrl [
+    "textures/studio_sky_bottom.hdr"
+  ]
+  frontIrradianceUrl [
+    "textures/studio_sky_front.hdr"
+  ]
+  leftIrradianceUrl [
+    "textures/studio_sky_left.hdr"
+  ]
+  rightIrradianceUrl [
+    "textures/studio_sky_right.hdr"
+  ]
+  topIrradianceUrl [
+    "textures/studio_sky_top.hdr"
+  ]
+  luminosity 0.8
+}
+DirectionalLight {
+  color 1 0.97 0.92
+  direction 0.45 -1 -0.55
+  intensity 2.4
+  castShadows TRUE
+}
+DirectionalLight {
+  color 0.88 0.93 1
+  direction -0.6 -0.7 0.7
+  intensity 0.5
+}
+Solid {
+  children [
+    Pose {
+      rotation 1 0 0 -1.570796
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 1
+            baseColorMap ImageTexture {
+              url [
+                "textures/floor_tiles.png"
+              ]
+            }
+            textureTransform TextureTransform {
+              scale 400 400
+            }
+            roughness 0.9
+            metalness 0
+            name "lab floor"
+          }
+          geometry Plane {
+            size 400 400
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 1 1
+        baseColorMap ImageTexture {
+          url [
+            "textures/lane_5m.png"
+          ]
+        }
+        roughness 0.75
+        metalness 0
+        name "lane"
+      }
+      geometry IndexedFaceSet {
+        coord Coordinate {
+          point [
+            5 0.001 0.4
+            5 0.001 -0.4
+            -195 0.001 -0.4
+            -195 0.001 0.4
+          ]
+        }
+        texCoord TextureCoordinate {
+          point [
+            0 1
+            0 0
+            40 0
+            40 1
+          ]
+        }
+        coordIndex [
+          0 1 2 3 -1
+        ]
+        texCoordIndex [
+          0 1 2 3 -1
+        ]
+      }
+      castShadows FALSE
+    }
+  ]
+  name "floor"
+  contactMaterial "floor"
+  boundingObject Pose {
+    rotation 1 0 0 -1.570796
+    children [
+      Plane {
+        size 20 20
+      }
+    ]
+  }
+  locked TRUE
+}
+DEF QUAD_ROBOT Robot {
+  translation 0 0.34 0
+  rotation 0 0 -1 0.01
+  children [
+    DEF CoM_Emitter Emitter {
+      name "CoM_Emitter"
+      type "serial"
+      bufferSize 1024
+    }
+    DEF SERVO1 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor 0.27 0 0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo1_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo1_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.27 -0.04 0.195
+        rotation 0 0 -1 0
+        children [
+          DEF LEG_GYRO_1_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_1_1"
+          }
+          DEF SPRING1 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING1MOTOR LinearMotor {
+                name "spring1"
+                maxVelocity 100
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring1_sensor"
+              }
+            ]
+            endPoint DEF SPRING1SOLID Solid {
+              children [
+                DEF FOOT1 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot1"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot1_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                      Pose {
+                        translation 0 -0.238 0
+                        rotation 1 0 0 -1.570796
+                        children [
+                          Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Cylinder {
+                              height 0.012
+                              radius 0.0072
+                              subdivision 32
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT1_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.1825 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.005
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.15 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.92 0.92 0.92
+                        roughness 0.45
+                        metalness 0
+                        name "accent"
+                      }
+                      geometry Cylinder {
+                        height 0.006
+                        radius 0.0095
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING1SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            children [
+              Pose {
+                translation 0 -0.0425 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.06 0.06 0.07
+                      roughness 0.42
+                      metalness 0.15
+                      name "carbon"
+                    }
+                    geometry Cylinder {
+                      height 0.145
+                      radius 0.0085
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.111 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.008
+                      radius 0.0105
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0.012 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.95 0.42 0.08
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.0092
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.11 0.11 0.12
+                  roughness 0.38
+                  metalness 0.55
+                  name "black anodized"
+                }
+                geometry Cylinder {
+                  height 0.044
+                  radius 0.022
+                  subdivision 32
+                }
+              }
+              Pose {
+                translation 0 0 0.012
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.95 0.42 0.08
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.006
+                      radius 0.0225
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0 0.0235
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.015
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.008 0.0258
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.97 0.97 0.97
+                      roughness 0.5
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.0035 0.016 0.0012
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+                appearance PBRAppearance {
+                  baseColor 0.06 0.06 0.07
+                  roughness 0.42
+                  metalness 0.15
+                  name "carbon"
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO1_link"
+      }
+    }
+    DEF SERVO2 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor -0.27 0 0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo2_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo2_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.27 -0.04 0.195
+        children [
+          DEF LEG_GYRO_2_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_2_1"
+          }
+          DEF SPRING2 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING2MOTOR LinearMotor {
+                name "spring2"
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring2_sensor"
+              }
+            ]
+            endPoint DEF SPRING2SOLID Solid {
+              children [
+                DEF FOOT2 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 -1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot2"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot2_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                      Pose {
+                        translation 0 -0.238 0
+                        rotation 1 0 0 -1.570796
+                        children [
+                          Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Cylinder {
+                              height 0.012
+                              radius 0.0072
+                              subdivision 32
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT2_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.1825 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.005
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.15 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.92 0.92 0.92
+                        roughness 0.45
+                        metalness 0
+                        name "accent"
+                      }
+                      geometry Cylinder {
+                        height 0.006
+                        radius 0.0095
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING2SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            children [
+              Pose {
+                translation 0 -0.0425 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.06 0.06 0.07
+                      roughness 0.42
+                      metalness 0.15
+                      name "carbon"
+                    }
+                    geometry Cylinder {
+                      height 0.145
+                      radius 0.0085
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.111 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.008
+                      radius 0.0105
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0.012 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.12 0.47 0.9
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.0092
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.11 0.11 0.12
+                  roughness 0.38
+                  metalness 0.55
+                  name "black anodized"
+                }
+                geometry Cylinder {
+                  height 0.044
+                  radius 0.022
+                  subdivision 32
+                }
+              }
+              Pose {
+                translation 0 0 0.012
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.12 0.47 0.9
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.006
+                      radius 0.0225
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0 0.0235
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.015
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.008 0.0258
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.97 0.97 0.97
+                      roughness 0.5
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.0035 0.016 0.0012
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+                appearance PBRAppearance {
+                  baseColor 0.06 0.06 0.07
+                  roughness 0.42
+                  metalness 0.15
+                  name "carbon"
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO2_link"
+      }
+    }
+    DEF SERVO3 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor -0.27 0 -0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo3_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo3_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.27 -0.04 -0.195
+        children [
+          DEF LEG_GYRO_3_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_1_1"
+          }
+          DEF SPRING3 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING3MOTOR LinearMotor {
+                name "spring3"
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring3_sensor"
+              }
+            ]
+            endPoint DEF SPRING3SOLID Solid {
+              children [
+                DEF FOOT3 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 -1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot3"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot3_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                      Pose {
+                        translation 0 -0.238 0
+                        rotation 1 0 0 -1.570796
+                        children [
+                          Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Cylinder {
+                              height 0.012
+                              radius 0.0072
+                              subdivision 32
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT3_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.1825 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.005
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.15 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.92 0.92 0.92
+                        roughness 0.45
+                        metalness 0
+                        name "accent"
+                      }
+                      geometry Cylinder {
+                        height 0.006
+                        radius 0.0095
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING3SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            children [
+              Pose {
+                translation 0 -0.0425 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.06 0.06 0.07
+                      roughness 0.42
+                      metalness 0.15
+                      name "carbon"
+                    }
+                    geometry Cylinder {
+                      height 0.145
+                      radius 0.0085
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.111 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.008
+                      radius 0.0105
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0.012 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.12 0.47 0.9
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.0092
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            rotation 0 1 0 3.14159
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.11 0.11 0.12
+                  roughness 0.38
+                  metalness 0.55
+                  name "black anodized"
+                }
+                geometry Cylinder {
+                  height 0.044
+                  radius 0.022
+                  subdivision 32
+                }
+              }
+              Pose {
+                translation 0 0 0.012
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.12 0.47 0.9
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.006
+                      radius 0.0225
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0 0.0235
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.015
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.008 0.0258
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.97 0.97 0.97
+                      roughness 0.5
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.0035 0.016 0.0012
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+                appearance PBRAppearance {
+                  baseColor 0.06 0.06 0.07
+                  roughness 0.42
+                  metalness 0.15
+                  name "carbon"
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO3_link"
+      }
+    }
+    DEF SERVO4 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor 0.27 0 -0.195
+        minStop -0.435
+        maxStop 0.435
+      }
+      device [
+        RotationalMotor {
+          name "servo4_rot"
+          controlPID 60 0 0
+          maxVelocity 12
+          minPosition -0.435
+          maxPosition 0.435
+          maxTorque 6.5
+        }
+        PositionSensor {
+          name "servo4_rot_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.27 -0.04 -0.195
+        children [
+          DEF LEG_GYRO_4_1 Gyro {
+            translation 0 0.04 0
+            name "leg_gyro_1_1"
+          }
+          DEF SPRING4 SliderJoint {
+            jointParameters JointParameters {
+              axis 0 1 0
+              maxStop 0.035
+              springConstant 3400
+              dampingConstant 8
+            }
+            device [
+              DEF SPRING4MOTOR LinearMotor {
+                name "spring4"
+                maxPosition 0.035
+                maxForce 0
+              }
+              PositionSensor {
+                name "spring4_sensor"
+              }
+            ]
+            endPoint DEF SPRING4SOLID Solid {
+              children [
+                DEF FOOT4 SliderJoint {
+                  jointParameters JointParameters {
+                    axis 0 -1 0
+                    maxStop 1e-06
+                    springConstant 100
+                  }
+                  device [
+                    LinearMotor {
+                      name "foot4"
+                      maxPosition 1e-06
+                      maxForce 0
+                    }
+                    PositionSensor {
+                      name "foot4_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      DEF FOOT_TRANS Pose {
+                        translation 0 -0.25 0
+                        rotation 1 0 0 0
+                        children [
+                          DEF FOOT_SHAPE Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Sphere {
+                              radius 0.01
+                            }
+                          }
+                        ]
+                      }
+                      Pose {
+                        translation 0 -0.238 0
+                        rotation 1 0 0 -1.570796
+                        children [
+                          Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.035 0.035 0.035
+                              roughness 0.88
+                              metalness 0
+                              name "rubber"
+                            }
+                            geometry Cylinder {
+                              height 0.012
+                              radius 0.0072
+                              subdivision 32
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                    contactMaterial "foot"
+                    boundingObject USE FOOT_TRANS
+                    physics Physics {
+                      density -1
+                      mass 0.0025
+                      centerOfMass [
+                        0 -0.0833 0
+                      ]
+                      inertiaMatrix [
+                        10 10 1e-08
+                        0 0 0
+                      ]
+                    }
+                    name "FOOT4_link"
+                  }
+                }
+                DEF LEG_TRANS Pose {
+                  translation 0 -0.1825 0
+                  rotation -1 0 0 1.570796
+                  children [
+                    DEF LEG Shape {
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.004
+                        subdivision 6
+                      }
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.1825 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.93 0.93 0.95
+                        roughness 0.12
+                        metalness 1
+                        name "chrome"
+                      }
+                      geometry Cylinder {
+                        height 0.135
+                        radius 0.005
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+                Pose {
+                  translation 0 -0.15 0
+                  rotation 1 0 0 -1.570796
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.92 0.92 0.92
+                        roughness 0.45
+                        metalness 0
+                        name "accent"
+                      }
+                      geometry Cylinder {
+                        height 0.006
+                        radius 0.0095
+                        subdivision 32
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE LEG_TRANS
+              physics Physics {
+                density -1
+                mass 0.03
+                centerOfMass [
+                  0 -0.0833 0
+                ]
+                inertiaMatrix [
+                  10 10 1e-08
+                  0 0 0
+                ]
+              }
+              name "SPRING4SOLID"
+            }
+          }
+          DEF SPRING_CASE_TRANS Pose {
+            children [
+              Pose {
+                translation 0 -0.0425 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.06 0.06 0.07
+                      roughness 0.42
+                      metalness 0.15
+                      name "carbon"
+                    }
+                    geometry Cylinder {
+                      height 0.145
+                      radius 0.0085
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.111 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.008
+                      radius 0.0105
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0.012 0
+                rotation 1 0 0 -1.570796
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.95 0.42 0.08
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.0092
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF SERVO Pose {
+            translation 0 0.04 0
+            rotation 0 1 0 3.14159
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.11 0.11 0.12
+                  roughness 0.38
+                  metalness 0.55
+                  name "black anodized"
+                }
+                geometry Cylinder {
+                  height 0.044
+                  radius 0.022
+                  subdivision 32
+                }
+              }
+              Pose {
+                translation 0 0 0.012
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.95 0.42 0.08
+                      roughness 0.45
+                      metalness 0
+                      name "accent"
+                    }
+                    geometry Cylinder {
+                      height 0.006
+                      radius 0.0225
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 0 0.0235
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.86 0.87 0.89
+                      baseColorMap ImageTexture {
+                        url [
+                          "textures/alum.png"
+                        ]
+                      }
+                      roughness 0.32
+                      metalness 0.85
+                      name "brushed aluminium"
+                    }
+                    geometry Cylinder {
+                      height 0.004
+                      radius 0.015
+                      subdivision 32
+                    }
+                  }
+                ]
+              }
+              Pose {
+                translation 0 -0.008 0.0258
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.97 0.97 0.97
+                      roughness 0.5
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.0035 0.016 0.0012
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF UPP_LEG Pose {
+            rotation 1 0 0 -1.570796
+            children [
+              Shape {
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.004
+                  subdivision 6
+                }
+                appearance PBRAppearance {
+                  baseColor 0.06 0.06 0.07
+                  roughness 0.42
+                  metalness 0.15
+                  name "carbon"
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE UPP_LEG
+        physics Physics {
+          density -1
+          mass 0.07
+          centerOfMass [
+            0 -0.0833 0
+          ]
+          inertiaMatrix [
+            10 10 0.00122
+            0 0 0
+          ]
+        }
+        name "SERVO4_link"
+      }
+    }
+    DEF CoM_Receiver Receiver {
+      name "CoM_Receiver"
+    }
+    DEF CoM_Gyro Gyro {
+      name "CoM_Gyro"
+    }
+    DEF CoM_GPS GPS {
+      name "CoM_Gps"
+    }
+    DEF CoM_Accelerometer Accelerometer {
+      name "CoM_Accelerometer"
+    }
+    DEF ROBOT_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.86 0.87 0.89
+        baseColorMap ImageTexture {
+          url [
+            "textures/alum.png"
+          ]
+        }
+        roughness 0.32
+        metalness 0.85
+        name "brushed aluminium"
+      }
+      geometry Box {
+        size 0.6 0.08 0.35
+      }
+    }
+    Pose {
+      translation 0.02 0.056 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.11 0.11 0.12
+            roughness 0.38
+            metalness 0.55
+            name "black anodized"
+          }
+          geometry Box {
+            size 0.24 0.032 0.17
+          }
+        }
+      ]
+    }
+    Pose {
+      translation -0.08 0.0735 0.06
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.75 0.35
+            roughness 0.45
+            metalness 0
+            name "accent"
+          }
+          geometry Box {
+            size 0.012 0.004 0.012
+          }
+        }
+      ]
+    }
+    Pose {
+      translation 0.3065 0 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.05 0.05 0.055
+            roughness 0.6
+            metalness 0
+            name "trim"
+          }
+          geometry Box {
+            size 0.013 0.05 0.32
+          }
+        }
+      ]
+    }
+    Pose {
+      translation -0.3065 0 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.05 0.05 0.055
+            roughness 0.6
+            metalness 0
+            name "trim"
+          }
+          geometry Box {
+            size 0.013 0.05 0.32
+          }
+        }
+      ]
+    }
+    Pose {
+      translation 0 0.0385 0.1755
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.05 0.05 0.055
+            roughness 0.6
+            metalness 0
+            name "trim"
+          }
+          geometry Box {
+            size 0.6 0.006 0.006
+          }
+        }
+      ]
+    }
+    Pose {
+      translation 0 0.0385 -0.1755
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.05 0.05 0.055
+            roughness 0.6
+            metalness 0
+            name "trim"
+          }
+          geometry Box {
+            size 0.6 0.006 0.006
+          }
+        }
+      ]
+    }
+    Pose {
+      translation 0 0 0.1762
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 1
+            baseColorMap ImageTexture {
+              url [
+                "textures/ntua3.png"
+              ]
+            }
+            roughness 0.45
+            metalness 0.25
+            name "CSL logo"
+          }
+          geometry Cylinder {
+            height 0.002
+            radius 0.034
+            subdivision 32
+          }
+        }
+      ]
+    }
+    Pose {
+      translation 0 0 -0.1762
+      rotation 0 1 0 3.141593
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 1
+            baseColorMap ImageTexture {
+              url [
+                "textures/ntua3.png"
+              ]
+            }
+            roughness 0.45
+            metalness 0.25
+            name "CSL logo"
+          }
+          geometry Cylinder {
+            height 0.002
+            radius 0.034
+            subdivision 32
+          }
+        }
+      ]
+    }
+  ]
+  name "QUAD_ROBOT"
+  boundingObject USE ROBOT_SHAPE
+  physics Physics {
+    density -1
+    mass 10.5
+    centerOfMass [
+      0 0 0
+    ]
+    inertiaMatrix [
+      10 10 0.8
+      0 0 0
+    ]
+  }
+  locked TRUE
+  selfCollision TRUE
+  supervisor TRUE
+  controller "controller_webots730_Feb_FINAL"
+}
+Solid {
+  translation 1 0.16 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 1 1
+        baseColorMap ImageTexture {
+          url [
+            "textures/crate_wood.png"
+          ]
+        }
+        roughness 0.7
+        metalness 0
+        name "wood"
+      }
+      geometry Box {
+        size 0.32 0.32 0.32
+      }
+    }
+  ]
+  name "wood box"
+  boundingObject Box {
+    size 0.32 0.32 0.32
+  }
+}
